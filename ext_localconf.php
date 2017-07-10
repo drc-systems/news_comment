@@ -7,16 +7,24 @@ if (!defined('TYPO3_MODE')) {
 	'DRCSystems.' . $_EXTKEY,
 	'Newscomment',
 	array(
-		'Comment' => 'new, list, show, create, edit, update, delete, addrating, search, searchcomments, updatecomments, reply',
-		'Rating' => 'list, show, new, create, edit, update, delete',
-		
+		'Comment' => 'new, list, create, search, searchcomments, reply',
 	),
 	// non-cacheable actions
 	array(
-		'Comment' => 'list, create, update, delete, search',
-		'Rating' => 'create, update, delete',
-		
+		'Comment' => 'list, create, search',
 	)
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'DRCSystems.' . $_EXTKEY,
+    'Newscommentajax',
+    array(
+        'Comment' => 'addrating',
+    ),
+    // non-cacheable actions
+    array(
+        'Comment' => 'addrating',
+    )
 );
 
 

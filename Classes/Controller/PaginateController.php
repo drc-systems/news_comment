@@ -73,7 +73,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 	public function initializeAction() {
 		$this->objects = $this->widgetConfiguration['objects'];
 		//$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($this->configuration, $this->widgetConfiguration['configuration'], TRUE);
-		
+
 		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $this->widgetConfiguration['configuration'], TRUE);
 	}
 
@@ -189,7 +189,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		));
 		$this->view->assign('configuration', $this->configuration);
 		if($this->numberOfPages >= 2) {
-			$this->view->assign('pagination', $this->buildPagination());			
+			$this->view->assign('pagination', $this->buildPagination());
 		}
 		$this->view->assign('itemsPerPage', $this->itemsPerPage);
 	}

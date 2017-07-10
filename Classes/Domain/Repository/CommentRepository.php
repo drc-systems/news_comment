@@ -35,7 +35,7 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     protected $defaultOrderings = array(
         'crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
     );
-    
+
     /**
      * Userid
      *
@@ -53,6 +53,7 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $query->equals('spam', 0),
         );
         if ($filter['searchterm'] != '') {
+            $filter['searchterm'] = filter_var(trim($filter['searchterm']), FILTER_SANITIZE_STRING);
             array_push($queryArr, $query->like('description', '%' . $filter['searchterm'] . '%'));
         }
         $query->matching($query->logicalAnd($queryArr));
@@ -86,14 +87,14 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function getBackendComments($filter = array(),$isCount = 0)
     {
-        
+
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(FALSE);
         $query->getQuerySettings()->setIgnoreEnableFields(true)->setIncludeDeleted(true);
         $queryArr = array();
-        
+
         if($filter['type']){
-         
+
             switch ($filter['type']) {
                 case 1:
                          array_push($queryArr, $query->equals('deleted', 0));
@@ -114,10 +115,10 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                          break;
                 case 5:
                          array_push($queryArr, $query->equals('deleted', 1));
-                         break;   
+                         break;
                 default:
                          array_push($queryArr, $query->equals('deleted', 0));
-                         break;        
+                         break;
             }
         }
         else
@@ -127,6 +128,7 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         if ($filter['searchterm'] != '') {
+            $filter['searchterm'] = filter_var(trim($filter['searchterm']), FILTER_SANITIZE_STRING);
             array_push($queryArr, $query->like('description', '%' . $filter['searchterm'] . '%'));
         }
 
@@ -136,12 +138,12 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query->matching($query->logicalAnd($queryArr));
         if ($filter['sort'] != '') {
-           $sort = $filter['sort'];
-           $order = $filter['order'];
+           $sort = filter_var(trim($filter['sort']), FILTER_SANITIZE_STRING);
+           $order = filter_var(trim($filter['order']), FILTER_SANITIZE_STRING);
         }
         if ($sort == 'date' && $order=='desc')  {
             $query->setOrderings(array('crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING));
-        } 
+        }
         else if ($sort == 'date' && $order=='asc') {
             $query->setOrderings(array('crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING));
         }
@@ -156,10 +158,10 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
         else if ($sort == 'comment' && $order=='asc') {
             $query->setOrderings(array('description' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING));
-        } 
+        }
 
         if($isCount == 1)
-            return $query->count(); 
+            return $query->count();
         else
             return $query->execute();
     }
@@ -194,8 +196,8 @@ class CommentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $result;
     }
 
-    
 
-    
+
+
 
 }

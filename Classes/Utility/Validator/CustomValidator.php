@@ -32,10 +32,17 @@ class CustomValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
             'description' => $newComment->getDescription()
         );
 
-		$userName =  $newComment->getUsername(); 
-		$usermail =  $newComment->getUsermail(); 
-		$commentText =  $newComment->getDescription(); 
-		$this->settings = $this->getPluginSettings();
+		$userName =  GeneralUtility::removeXSS($newComment->getUsername());
+        $usermail =  GeneralUtility::removeXSS($newComment->getUsermail());
+        $commentText =  GeneralUtility::removeXSS($newComment->getDescription());
+        $website =  GeneralUtility::removeXSS($newComment->getWebsite());
+
+		$newComment->setUsername($userName);
+        $newComment->setUsermail($usermail);
+        $newComment->setDescription($commentText);
+        $newComment->setWebsite($website);
+
+        $this->settings = $this->getPluginSettings();
 
 		if($userName == '' || $usermail == '' || trim($commentText) == '')
 		{
@@ -54,7 +61,7 @@ class CustomValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
             $msg = LocalizationUtility::translate('tx_newscomment_domain_model_comment.badwordfound_msg', 'NewsComment', $translateArguments);
             $this->addError($msg, 1406644911);
             return;
-        } 
+        }
         return;
 	}
 
@@ -69,12 +76,12 @@ class CustomValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
 		);
 		$extensionTyposcript = $fullTyposcript['plugin.']['tx_newscomment_newscomment.']['settings.'];
 
-		return($extensionTyposcript); 
+		return($extensionTyposcript);
 	}
 
 	protected function checkBadWord($commentText)
 	{
-		$badWords = $this->settings['badwordFilterString'];  
+		$badWords = $this->settings['badwordFilterString'];
         $badWordsList = explode(',', $badWords);
         foreach ($badWordsList as $key => $value) {
         	if(trim($value) != '' && $commentText != ''){
@@ -83,8 +90,8 @@ class CustomValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
 					return true;
 	            }
         	}
-        } 
+        }
         return false;
 	}
-	
+
 }

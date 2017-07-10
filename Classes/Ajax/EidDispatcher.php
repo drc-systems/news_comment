@@ -1,5 +1,5 @@
 <?php
-	
+
 namespace DRCSystems\NewsComment\Ajax;
 
 class EidDispatcher {
@@ -7,12 +7,12 @@ class EidDispatcher {
    * @var \array
    */
 	protected $configuration;
-	
+
 	/**
    * @var \array
    */
 	protected $bootstrap;
-	
+
 	/**
    * The main Method
    *
@@ -21,27 +21,27 @@ class EidDispatcher {
 	public function run() {
 		return $this->bootstrap->run( '', $this->configuration );
 	}
-	
+
 	/**
    * Initialize Extbase
    *
    * @param \array $TYPO3_CONF_VARS
    */
-	public function __construct($TYPO3_CONF_VARS) { 
-		$page = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('page');
+	public function __construct($TYPO3_CONF_VARS) {
+		//$page = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('page');
 
 		$ajaxRequest = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_newscomment_newscomment');
-		
-		
+
+
 		// create bootstrap
 		$this->bootstrap = new \TYPO3\CMS\Extbase\Core\Bootstrap();
-		
+
 		// get User
 		$feUserObj = \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
-		
+
 		// set PID
-		$pid = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET( 'id' )) ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id') : 0; 
-		
+		$pid = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET( 'id' )) ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id') : 0;
+
 		// Create and init Frontend
 		$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', $TYPO3_CONF_VARS, $pid, 0, TRUE );
 		\TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
@@ -59,16 +59,16 @@ class EidDispatcher {
 		// Get Plugins TypoScript
 		$TypoScriptService = new \TYPO3\CMS\Extbase\Service\TypoScriptService();
 		$pluginConfiguration = $TypoScriptService->convertTypoScriptArrayToPlainArray($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_newscomment_newscomment.']);
-		
-		
-		
+
+
+
 		// Set configuration to call the plugin
 		$this->configuration = array (
-				'pluginName' => $ajaxRequest['pluginName'],
+				'pluginName' => 'Newscommentajax',
 				'vendorName' => 'DRCSystems',
 				'extensionName' => 'NewsComment',
-				'controller' => $ajaxRequest['controller'],
-				'action' => $ajaxRequest['action'],
+				'controller' => 'Comment',
+				'action' => 'addrating',
 				'params' => $ajaxRequest['param'],
 				'mvc' => array (
 						'requestHandlers' => array (
@@ -80,7 +80,7 @@ class EidDispatcher {
 						'storagePid' => $pluginConfiguration['persistence']['storagePid']
 				)
 		);
-		
+
 	}
 }
 global $TYPO3_CONF_VARS;

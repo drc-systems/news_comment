@@ -20,7 +20,7 @@ if (TYPO3_MODE === 'BE') {
 		'comments',	// Submodule key
 		'',						// Position
 		array(
-			'Comment' => 'listcomments, updatecomments, searchcomments, reply, list, show, new, create, edit, update, delete','Rating' => 'list, show, new, create, edit, update, delete',
+			'Comment' => 'listcomments, searchcomments, reply, new, create,  update, delete',
 		),
 		array(
 			'access' => 'user,group',

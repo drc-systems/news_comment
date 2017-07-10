@@ -5,7 +5,7 @@ plugin.tx_newscomment_newscomment {
 		partialRootPaths.0 = {$plugin.tx_newscomment_newscomment.view.partialRootPath}
 		layoutRootPaths.0 = {$plugin.tx_newscomment_newscomment.view.layoutRootPath}
 	}
-	
+
 	settings {
 		jQuery{
 			require = 1
@@ -13,7 +13,7 @@ plugin.tx_newscomment_newscomment {
 		}
 		siteURL = {$baseURL}
 		requireCommentApproval = {$plugin.tx_newscomment_newscomment.settings.requireCommentApproval}
-		
+
 		addJsValidations = {$plugin.tx_newscomment_newscomment.settings.addJsValidations}
 
 		showPagination = {$plugin.tx_newscomment_newscomment.settings.showPagination}
@@ -63,7 +63,7 @@ plugin.tx_newscomment_newscomment {
 }
 
 module.tx_newscomment {
-	
+
 
 	view {
 		templateRootPaths.0 = {$module.tx_newscomment.view.templateRootPath}

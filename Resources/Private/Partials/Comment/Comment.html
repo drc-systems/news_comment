@@ -1,7 +1,7 @@
 
 	<div class="col-md-8">
 		<div class="row">
-			
+
 				<div class="col-md-3">
 					<f:if condition="{comment.user.image}">
 						<f:then>
@@ -23,22 +23,22 @@
 					</f:if>
 					<span class="badge"><f:format.date format="{settings.dateformat}">{comment.crdate}</f:format.date></span>
 				</div>
-					
+
 		</div>
 		<div class="row" >
 				<div  class="col-md-12">
 					<f:if condition="{settings.limitsDescriptionLength}">
 						<f:then>
 
-							<div><f:format.raw><f:format.crop maxCharacters="{settings.limitsDescriptionLength}" append="[<a href='javascript:void(0);' class='viewmore'>...View More</a>]">{comment.description}</f:format.crop></f:format.raw></div>
+							<div><f:format.html><f:format.crop maxCharacters="{settings.limitsDescriptionLength}" append="[<a href='javascript:void(0);' class='viewmore'>...View More</a>]">{comment.description}</f:format.crop></f:format.html></div>
 
-							<div style="display:none;"> <f:format.nl2br><f:format.raw>{comment.description}&nbsp;[<a href='javascript:void(0);' class='hidethis' >Hide</a>]</f:format.raw></f:format.nl2br><br></div>
+							<div style="display:none;"> <f:format.nl2br><f:format.html>{comment.description}&nbsp;[<a href='javascript:void(0);' class='hidethis' >Hide</a>]</f:format.html></f:format.nl2br><br></div>
 						</f:then>
 						<f:else>
-							<f:format.nl2br><f:format.raw>{comment.description}</f:format.raw></f:format.nl2br><br>
+							<f:format.nl2br><f:format.html>{comment.description}</f:format.html></f:format.nl2br><br>
 						</f:else>
 					</f:if>
-				</div>		
+				</div>
 		</div>
 		<f:if condition="{settings.enableReplyToComment} == 1">
 			<f:then>
@@ -49,7 +49,7 @@
 				</div>
 			</f:then>
 		</f:if>
-		
+
 	</div>
 
 	<f:if condition="{settings.enableRating} == 1">
@@ -63,25 +63,25 @@
 								<f:if condition="{comment.allowrating}">
 									<f:then>
 										<f:if condition="{settings.enableRatingAtLogin} == 1">
-											<f:then>	
+											<f:then>
 
 												<f:if condition="{currentuser.uid}">
-													<f:then>		
+													<f:then>
 
-											  			<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="addRating(this,{comment.uid});">&#9733;</li>  
+											  			<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="addRating(this,{comment.uid});">&#9733;</li>
 											  		</f:then>
 											  		<f:else>
-											  			<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="requireLogin();">&#9733;</li>  
+											  			<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="requireLogin();">&#9733;</li>
 											  		</f:else>
 											  	</f:if>
 											</f:then>
 											<f:else>
-													<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="addRating(this,{comment.uid});">&#9733;</li>  
+													<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="addRating(this,{comment.uid});">&#9733;</li>
 											</f:else>
 										</f:if>
 								</f:then>
 								<f:else>
-										<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="notAllowRating();">&#9733;</li> 
+										<li class="{f:if(condition:'{itemIteration.cycle} <= {comment.rate}', then:'selected')}" id="{settings.commentAnchorPrefix}" onmouseover="highlightStar(this,{comment.uid});" onmouseout="removeHighlight({comment.uid});" onClick="notAllowRating();">&#9733;</li>
 								</f:else>
 								</f:if>
 							</f:for>
@@ -90,13 +90,13 @@
 					<div class="hide-comment-rating-box">
 						<f:translate key="tx_newscomment_domain_model_comment.lblvotes" />:<f:count subject="{comment.rating}" />
 					</div>
-					
+
 				</div>
 			</div>
 		</f:then>
 	</f:if>
 
-	
+
 
 	<div class="comment-form-reply_{comment.uid}">&nbsp;</div>
 
@@ -112,7 +112,7 @@
 								<f:render partial="Comment/Comment" arguments="{comment:prcomment}" />
 							</div>
 						</f:then>
-					</f:if>	
+					</f:if>
 				</div>
 			</f:for>
 		</f:then>

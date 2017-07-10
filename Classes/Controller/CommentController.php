@@ -42,7 +42,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 * @inject
 		 */
 		protected $commentRepository = null;
-		
+
 		/**
 		 * ratingRepository
 		 *
@@ -50,7 +50,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 * @inject
 		 */
 		protected $ratingRepository = null;
-		
+
 		/**
 		 * usersRepository
 		 *
@@ -58,7 +58,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 * @inject
 		 */
 		protected $usersRepository = null;
-		
+
 		/**
 		 * @var \GeorgRinger\News\Domain\Repository\NewsRepository
 		 * @inject
@@ -72,7 +72,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		{
 				$this->cacheManager = $cacheManager;
 		}
-		
+
 		/**
 		 * action initialize
 		 *
@@ -86,16 +86,14 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$this->pageUid = $GLOBALS['TSFE']->id;
 				$this->userSessionId = $this->getUserSesssionId();
 				$this->currentUser = $GLOBALS['TSFE']->fe_user->user;
-				$this->settings = $this->settings;
-				$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+								$extbaseFrameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 				if (empty($configuration['persistence']['storagePid'])) {
-						$currentPid['persistence']['storagePid'] = GeneralUtility::_GP('id');
+						$currentPid['persistence']['storagePid'] = $this->pageUid;
 						$this->configurationManager->setConfiguration(array_merge($extbaseFrameworkConfiguration, $currentPid));
 				}
-				$settings = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_newscomment_newscomment.']['settings.'];        
-				$this->settings = $settings;
+
 		}
-		
+
 		/**
 		 * action list
 		 *
@@ -109,7 +107,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$wtFilter['sort'] = $args['orderby'];
 				$this->redirectToURI($this->buildUriByUid($this->pageUid, $wtFilter));
 		}
-		
+
 		/**
 		 * action list
 		 *
@@ -117,7 +115,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 */
 		public function listAction()
 		{
-				
+
 		}
 
 
@@ -128,20 +126,20 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 */
 		public function searchcommentsAction()
 		{
-				
+
 				$args = $this->request->getArguments();
-				
+
 				if(isset($args['moveto']))
 				{
 						if($args['commentId']!= '')
-								$commentIds[] =  $args['commentId']; 
+								$commentIds[] =  $args['commentId'];
 
 						foreach ($args as $key => $value) {
 								$keyArr = explode('_', $key);
 								if($keyArr[0] == 'chkmass' && $value==1)
 										$commentIds[] = $keyArr[1];
 						}
-						
+
 						foreach ($commentIds as $key => $value) {
 								$comment = $this->commentRepository->getByCommentid($value);
 
@@ -162,20 +160,20 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 												$comment->setSpam(false);
 										if($args['moveto'] == 7)
 												$comment->setDeleted(0);
-										
+
 										$this->commentRepository->update($comment);
 								}
 						}
-						
+
 				}
-				
+
 				$wtFilter = array();
 				$wtFilter['searchterm'] = $args['searchterm'];
 				$wtFilter['newsId'] = $args['newsId'];
 				$wtFilter['sort'] = $args['sort'];
 				$wtFilter['order'] = $args['order'];
 
-				
+
 				$uriBuilder = $this->controllerContext->getUriBuilder();
 				$uriBuilder->reset();
 				$uriBuilder->setArguments(array(
@@ -204,11 +202,11 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 						$params['order'] ='desc';
 				else
 						$params['order'] ='asc';
-				
+
 				$comments = $this->commentRepository->getBackendComments($args['filter']);
 				foreach ($comments as $key => $value) {
 						$news = $this->newsRepository->findByUid($value->getNewsuid(), false);
-						
+
 						//--- checking if news is hidden or deleted
 						$newsHiddenDeleted = FALSE;
 						if($news->getHidden() == TRUE || $news->getDeleted() == TRUE) {
@@ -216,20 +214,20 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 						}
 						$value->setIsNewsHiddenOrDeleted($newsHiddenDeleted);
 						//---
-						
+
 						$newstitle = $news->getTitle();
 						$value->setNewstitle($newstitle);
 
 						$newsComments = $this->commentRepository->getByNews($value->getNewsuid());
-					 
+
 						$pageUid = $value->getPageid();
 						if($pageUid != ''){
 							$value->setPosturl($this->buildPostUrl($pageUid,$value->getNewsuid()));
 						}
 						else
-							$value->setPosturl(''); 
+							$value->setPosturl('');
 						$value->setTotalcomments(count($newsComments));
-				} 
+				}
 				$this->view->assign('comments', $comments);
 				$this->view->assign('params', $params);
 
@@ -267,13 +265,13 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 															);
 
 				for ($i = 1; $i <= 7; $i++) {
-								
+
 								$text = LocalizationUtility::translate('tx_newscomment_domain_model_comment.selectactions.' . $i, 'NewsComment', array());
 								if($params['type'] == 2 && in_array($i, $pendingOptions))
 										$actionlistCombo[$i] = $text;
 								else if($params['type'] == 3 && in_array($i, $approveOptions))
 										$actionlistCombo[$i] = $text;
-								else if($params['type'] == 4 && in_array($i, $spamOptions))
+							else if($params['type'] == 4 && in_array($i, $spamOptions))
 										$actionlistCombo[$i] = $text;
 								else if($params['type'] == 5 && in_array($i, $trashOptions))
 										$actionlistCombo[$i] = $text;
@@ -284,7 +282,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 										if(!isset($params['type']) && in_array($i, $allOptions))
 												$actionlistCombo[$i] = $text;
 								}
-							
+
 				}
 				$this->view->assign('actionlistCombo', $actionlistCombo);
 				$this->view->assign('optionsArray', $optionsArray);
@@ -323,7 +321,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				}
 				$this->redirect('listcomments');
 		}
-		
+
 		/**
 		 * action show
 		 *
@@ -334,8 +332,8 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		{
 				$this->view->assign('comment', $comment);
 		}
-		
-		
+
+
 
 		/**
 		 * action new
@@ -345,7 +343,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		public function newAction()
 		{
 				$this->view->assign('settings', $this->settings);
-				
+
 				if ($this->settings['jQuery']['require'] == 1) {
 						//Add JS files
 						$jQueryVersion = trim($this->settings['jQuery']['version']);
@@ -408,7 +406,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 				$this->view->assign('newComment', $newComment);
 		}
-		
+
 		/**
 		 * A template method for displaying custom error flash messages, or to
 		 * display no flash message at all on errors. Override this to customize
@@ -421,8 +419,8 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		{
 				return '';
 		}
-		
-	 
+
+
 		/**
 		 * action create
 		 *
@@ -493,12 +491,12 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$this->redirectToURI($this->buildUriByUid($this->pageUid, $arguments = array()));
 				return FALSE;
 		}
-		
+
 		/**
 		 * @param $variables
 		 */
 		public function sendNewCommentMailToAdmin($variables)
-		{
+{
 				$template = 'Email/mailNewCommentToAdmin.html';
 				$senderMail = $this->settings['notification']['senderEmail'];
 				$senderFrom = $this->settings['notification']['senderName'];
@@ -507,7 +505,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$subject = $this->settings['notification']['siteadmin']['adminMailSubject'];
 				$this->sendTemplateEmail($recipient, $sender, $subject, $template, $variables);
 		}
-		
+
 		/**
 		 * @param $variables
 		 */
@@ -521,7 +519,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$subject = $this->settings['notification']['newsauthor']['authorMailSubject'];
 				$this->sendTemplateEmail($recipient, $sender, $subject, $template, $variables);
 		}
-		
+
 		/**
 		 * @param $recipient
 		 * @param $sender
@@ -545,7 +543,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$message->send();
 				return $message->isSent();
 		}
-		
+
 		/**
 		 * Returns a built URI by pageUid
 		 *
@@ -561,7 +559,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$uri = $this->addBaseUriIfNecessary($uri);
 				return $uri;
 		}
-		
+
 		/**
 		 * Returns a built URI by pageUid
 		 *
@@ -587,7 +585,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		{
 				$this->view->assign('comment', $comment);
 		}
-		
+
 		/**
 		 * action update
 		 *
@@ -608,10 +606,10 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$comment->setWebsite($website);
 				$this->commentRepository->update($comment);
 				$this->getPersistenceManager()->persistAll();
-				$this->redirect('listcomments');
 				$this->cacheManager->flushCachesInGroupByTag('pages', 'tx_news_uid_' . $comment->getNewsUid());
+				$this->redirect('listcomments');
 		}
-		
+
 		/**
 		 * action delete
 		 *
@@ -624,7 +622,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$this->commentRepository->remove($comment);
 				$this->redirect('list');
 		}
-		
+
 		/**
 		 * action list
 		 *
@@ -632,6 +630,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		 */
 		public function addratingAction()
 		{
+			if ($this->currentUser) {
 				$paramArr = GeneralUtility::_GET('param');
 				$rate = $paramArr['rate'];
 				$commentId = $paramArr['commentid'];
@@ -663,8 +662,11 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 						print $json;
 						die;
 				}
+			} else {
+				die('Action not allowed');
+			}
 		}
-		
+
 		/**
 		 * Creates a unique string for author identification
 		 *
@@ -685,7 +687,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 						return $this->userSessionId;
 				}
 		}
-		
+
 		/**
 		 * Creates a unique string for author identification
 		 *
@@ -695,7 +697,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		{
 				return $_COOKIE['userlogin'];
 		}
-		
+
 		/**
 		 * Get PersistenceManager
 		 *
@@ -706,7 +708,7 @@ class CommentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 				return $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 		}
-		
+
 		/**
 		 * Get client IP Address
 		 *

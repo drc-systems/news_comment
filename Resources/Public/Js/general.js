@@ -1,5 +1,5 @@
 jQuery(document).ready(function(){
-	
+
 	$("#orderby").change(function(){
 			elementObj = $('#searchterm');
 			var text = elementObj.attr('placeholder');
@@ -24,10 +24,10 @@ jQuery(document).ready(function(){
 		$('.comment-form-close-btn').hide();
 	});
 
-	
-	
+
+
 	$(".comment-reply-button").on('click', function(){
-		var parentCommentId = $(this).attr('btnvalue'); 
+		var parentCommentId = $(this).attr('btnvalue');
 
 		var commentHTML = $('.active-comment-form').html();
 		$('.active-comment-form').html('');
@@ -35,15 +35,15 @@ jQuery(document).ready(function(){
 		$(this).parent().parent().parent().parent().find('.comment-form-reply_'+parentCommentId).append(commentHTML);
 		$(this).parent().parent().parent().parent().find('.comment-form-reply_'+parentCommentId).addClass('active-comment-form');
 		$('.comment-form-close-btn').show();
-		
+
 		//$('#comment-description').animate({ height: "4em" }, 500);
-		
+
 		$('#parentId').val(parentCommentId);
 		$('#comment-description').focus();
 		//$('#comment-username').hide();
 		//$('#usermail').hide();
 		//$('#newsCommentSubmit').hide();
-		
+
 
 	});
 
@@ -73,11 +73,11 @@ jQuery(document).ready(function(){
 
 
 function highlightStar(obj,id) {
-	removeHighlight(id);		
+	removeHighlight(id);
 	$('.demo-table #tutorial-'+id+' li').each(function(index) {
 		$(this).addClass('highlight');
 		if(index == $('.demo-table #tutorial-'+id+' li').index(obj)) {
-			return false;	
+			return false;
 		}
 	});
 }
@@ -92,11 +92,11 @@ function addRating(obj,id) {
 		$(this).addClass('selected');
 		$('#tutorial-'+id+' #rating').val((index+1));
 		if(index == $('.demo-table #tutorial-'+id+' li').index(obj)) {
-			return false;	
+			return false;
 		}
 	});
 	submitRating($('#tutorial-'+id+' #rating').val(),id);
-	
+
 }
 
 function requireLogin()
@@ -105,20 +105,20 @@ function requireLogin()
 	$('html, body').animate({
 	                scrollTop: $("#ad-login").offset().top
 	            }, 2000);
-	
+
 	setTimeout(function() { $("#ad-login").fadeOut( "slow" ); }, 5000);
 }
 
 function notAllowRating()
 {
-	
+
 	$("#ad-notallowed").show();
 	$('html, body').animate({
 	                scrollTop: $("#ad-notallowed").offset().top
 	            }, 2000);
-	
+
 	setTimeout(function() { $("#ad-notallowed").fadeOut( "slow" ); }, 5000);
-	
+
 }
 
 function resetRating(id) {
@@ -126,7 +126,7 @@ function resetRating(id) {
 		$('.demo-table #tutorial-'+id+' li').each(function(index) {
 			$(this).addClass('selected');
 			if((index+1) == $('#tutorial-'+id+' #rating').val()) {
-				return false;	
+				return false;
 			}
 		});
 	}
@@ -137,23 +137,18 @@ function submitRating(rate,commentid)
 	var pageId = $('#pagid').val();
 	$.ajax({
 	    async: 'true',
-		url: 'index.php',      
-		type: 'GET', 
+		url: 'index.php',
+		type: 'GET',
 		dataType: 'json',
 	    data: {
-			eID: "Newscommentajax",  
+			eID: "Newscommentajax",
 			id:pageId,
-			tx_newscomment_newscomment: {
-				pluginName:  'Newscomment',
-				controller:  'Comment',
-				action:      'addrating',
-			},
 			param:{
 				rate:rate,
 				commentid:commentid,
 			}
 		},
-	   
+
 	    success:function(data){
 	       if(data.succ == 1)
 			{
@@ -161,12 +156,13 @@ function submitRating(rate,commentid)
 				$('html, body').animate({
 				                scrollTop: $("#ad-success").offset().top
 				            }, 100);
-				
+
 				setTimeout(function() { $("#ad-success").fadeOut( "slow" ); }, 500);
-				
-				setTimeout(function() { location.reload(); }, 2000);
+
+				setTimeout(function() { //location.reload();
+				}, 2000);
 			}
-			
+
 		}
 	});
 }
